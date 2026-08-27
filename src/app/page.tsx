@@ -159,7 +159,7 @@ export default function Home() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                  placeholder={loading ? 'Düşünüyor...' : 'ask me anything...'}
+                  placeholder={loading ? 'One minute...' : 'Ask me anything...'}
                   disabled={loading}
                   className="w-full bg-[#0f172a]/90 border border-slate-700 rounded-lg pl-10 pr-10 py-3 text-sm text-slate-200 focus:outline-none focus:border-blue-500 backdrop-blur-md placeholder:text-slate-500 shadow-xl"
                 />
