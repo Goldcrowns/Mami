@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { User, Send, Bot, MessageSquare, Link, Gift } from 'lucide-react';
+import { User, Send, MessageSquare, Link } from 'lucide-react';
 
 export default function Home() {
-  const [tab, setTab] = useState<'chat' | 'links' >('chat');
+  const [tab, setTab] = useState<'chat' | 'links'>('chat');
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Array<{ role: string; text: string }>>([
-    { role: 'assistant', text: "I'm Mami. Ask me anything!" },
+    { role: 'assistant', text: "I'm the director of Æ Labs. Ask me anything!" },
   ]);
   const [loading, setLoading] = useState(false);
 
@@ -65,14 +65,6 @@ export default function Home() {
           >
             <Link size={16} /> links
           </button>
-          <button
-            onClick={() => setTab('gift')}
-            className={`flex-1 py-1.5 text-sm rounded transition-all flex items-center justify-center gap-2 ${
-              tab === 'gift' ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/40' : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <Gift size={16} /> gift
-          </button>
         </div>
 
         {tab === 'chat' && (
@@ -127,7 +119,13 @@ export default function Home() {
             </div>
           </>
         )}
+
+        {tab === 'links' && (
+          <div className="w-full text-center text-slate-400 py-8">
+            Bağlantılar buraya gelecek.
+          </div>
+        )}
       </div>
     </main>
   );
-}
+        }
