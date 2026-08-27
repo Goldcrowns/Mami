@@ -42,7 +42,7 @@ export default function Home() {
   const [tab, setTab] = useState<'chat' | 'links'>('chat');
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Array<{ role: string; text: string }>>([
-    { role: 'assistant', text: "Sen sade ve kısa yanıtlar veren bir asistansın. Gereksiz uzatmalardan ve kişisel ifadelerden kaçın. İsmin Mami" },
+    { role: 'assistant', text: "I'm Mami. Ask me anything!" },
   ]);
   const [loading, setLoading] = useState(false);
 
@@ -123,7 +123,7 @@ export default function Home() {
           <div className="w-28 h-28 border-2 border-blue-500/40 rounded-xl overflow-hidden bg-slate-900/90 shadow-lg shadow-blue-500/10 flex items-center justify-center text-blue-400">
             <User size={56} />
           </div>
-          <h1 className="text-xl tracking-widest text-slate-200">kuzey</h1>
+          <h1 className="text-xl tracking-widest text-slate-200">mami</h1>
         </div>
 
         {tab === 'chat' && (
