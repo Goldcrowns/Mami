@@ -70,7 +70,7 @@ export default function CyberProfilePage() {
               className="relative w-32 h-32 object-cover rounded-sm border border-blue-500/40 shadow-inner"
             />
           </div>
-          <h1 className="text-xl font-bold tracking-wider text-white">kuzey</h1>
+          <h1 className="text-xl font-bold tracking-wider text-white">MAMİ</h1>
         </div>
 
         {/* Sekme İçerikleri */}
@@ -79,7 +79,7 @@ export default function CyberProfilePage() {
             {/* Karşılama Kartı */}
             <div className="w-full bg-blue-950/30 border border-blue-800/40 p-4 rounded-sm text-center shadow-lg backdrop-blur-sm">
               <p className="text-sm text-blue-200 leading-relaxed">
-                I'm the director of Æ Labs. Ask me anything!
+                Im Mami. Ask me anything!
               </p>
             </div>
 
