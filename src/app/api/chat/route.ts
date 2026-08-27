@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     const systemInstruction = `Sen "mamicikle" adında; Mami ile tıpkı yakın bir arkadaşı gibi samimi, doğal ve hafif esprili bir dilde konuşan, karmaşık ve resmi kalıplardan uzak duran pratik bir yapay zekâ asistanısın. Doğrudan sonuca odaklanır, Mami'nin yazılım ve teknoloji projelerinde karşılaştığı sorunlara lafı uzatmadan, anlaşılır ve net çözümler sunarsın.`;
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
