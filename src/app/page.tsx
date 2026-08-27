@@ -49,7 +49,7 @@ export default function Home() {
   const socialLinks = [
     {
       name: 'Instagram',
-      url: 'https://instagram.com/muhammetemindadak',
+      url: 'https://instagram.com/mamicikle',
       icon: <InstagramIcon size={18} />,
       color: 'hover:border-pink-500/50 hover:text-pink-400',
     },
@@ -122,7 +122,7 @@ export default function Home() {
           <div className="w-28 h-28 border-2 border-blue-500/40 rounded-xl overflow-hidden bg-slate-900/90 shadow-lg shadow-blue-500/10 flex items-center justify-center text-blue-400">
             <User size={56} />
           </div>
-          <h1 className="text-xl tracking-widest text-slate-200">kuzey</h1>
+          <h1 className="text-xl tracking-widest text-slate-200">Mami</h1>
         </div>
 
         {tab === 'chat' && (
@@ -152,7 +152,7 @@ export default function Home() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                  placeholder={loading ? 'Düşünüyor...' : 'ask me anything...'}
+                  placeholder={loading ? 'Bekle...' : 'ask me anything...'}
                   disabled={loading}
                   className="w-full bg-[#0f172a]/90 border border-slate-700 rounded-lg pl-10 pr-10 py-3 text-sm text-slate-200 focus:outline-none focus:border-blue-500 backdrop-blur-md placeholder:text-slate-500 shadow-xl"
                 />
