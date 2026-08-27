@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { User, Send, MessageSquare, Link as LinkIcon, Instagram } from 'lucide-react';
+import { User, Send, MessageSquare, Link as LinkIcon } from 'lucide-react';
 
-// TikTok ikonu için özel SVG bileşeni
+// TikTok SVG İkonu
 const TikTokIcon = ({ size = 18 }: { size?: number }) => (
   <svg
     width={size}
@@ -16,6 +16,24 @@ const TikTokIcon = ({ size = 18 }: { size?: number }) => (
     strokeLinejoin="round"
   >
     <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+  </svg>
+);
+
+// Instagram SVG İkonu
+const InstagramIcon = ({ size = 18 }: { size?: number }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
   </svg>
 );
 
@@ -32,7 +50,7 @@ export default function Home() {
     {
       name: 'Instagram',
       url: 'https://instagram.com/muhammetemindadak',
-      icon: <Instagram size={18} />,
+      icon: <InstagramIcon size={18} />,
       color: 'hover:border-pink-500/50 hover:text-pink-400',
     },
     {
