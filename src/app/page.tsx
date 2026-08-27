@@ -1,69 +1,133 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React, { useState } from "react";
+
+export default function CyberProfilePage() {
+  const [activeTab, setActiveTab] = useState<"chat" | "links" | "gift">("chat");
+  const [messages, setMessages] = useState<string[]>([]);
+  const [inputMsg, setInputMsg] = useState("");
+
+  const handleSend = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputMsg.trim()) return;
+    setMessages((prev) => [...prev, inputMsg]);
+    setInputMsg("");
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="min-h-screen bg-slate-950 text-blue-100 flex flex-col items-center justify-between p-4 font-mono relative overflow-hidden selection:bg-blue-500 selection:text-white">
+      {/* Arka plan siber ızgara deseni */}
+      <div 
+        className="absolute inset-0 opacity-15 pointer-events-none"
+        style={{
+          backgroundImage: `radial-gradient(#3b82f6 1px, transparent 1px), linear-gradient(to right, #1e293b 1px, transparent 1px), linear-gradient(to bottom, #1e293b 1px, transparent 1px)`,
+          backgroundSize: '20px 20px, 40px 40px, 40px 40px'
+        }}
+      />
+
+      <div className="w-full max-w-md flex flex-col items-center z-10 space-y-6 pt-4">
+        {/* Üst Sekme Menüsü */}
+        <nav className="w-full bg-blue-950/40 backdrop-blur-md border border-blue-800/40 rounded-sm p-1 flex justify-between shadow-lg shadow-blue-950/50">
+          <button
+            onClick={() => setActiveTab("chat")}
+            className={`flex-1 py-2 text-center text-sm transition-all rounded-sm ${
+              activeTab === "chat"
+                ? "bg-blue-600/30 text-white font-bold border border-blue-500/50 shadow-[0_0_10px_rgba(59,130,246,0.3)]"
+                : "text-blue-300/60 hover:text-blue-200"
+            }`}
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+            chat
+          </button>
+          <button
+            onClick={() => setActiveTab("links")}
+            className={`flex-1 py-2 text-center text-sm transition-all rounded-sm ${
+              activeTab === "links"
+                ? "bg-blue-600/30 text-white font-bold border border-blue-500/50 shadow-[0_0_10px_rgba(59,130,246,0.3)]"
+                : "text-blue-300/60 hover:text-blue-200"
+            }`}
+          >
+            links
+          </button>
+          <button
+            onClick={() => setActiveTab("gift")}
+            className={`flex-1 py-2 text-center text-sm transition-all rounded-sm ${
+              activeTab === "gift"
+                ? "bg-blue-600/30 text-white font-bold border border-blue-500/50 shadow-[0_0_10px_rgba(59,130,246,0.3)]"
+                : "text-blue-300/60 hover:text-blue-200"
+            }`}
+          >
+            gift
+          </button>
+        </nav>
+
+        {/* Profil Alanı */}
+        <div className="flex flex-col items-center space-y-3 pt-2">
+          <div className="relative group">
+            <div className="absolute -inset-0.5 bg-blue-500 rounded-sm blur opacity-30 group-hover:opacity-75 transition duration-300"></div>
+            <img
+              src="https://via.placeholder.com/150" 
+              alt="Avatar"
+              className="relative w-32 h-32 object-cover rounded-sm border border-blue-500/40 shadow-inner"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
+          <h1 className="text-xl font-bold tracking-wider text-white">kuzey</h1>
         </div>
-      </main>
+
+        {/* Sekme İçerikleri */}
+        {activeTab === "chat" && (
+          <div className="w-full space-y-4">
+            {/* Karşılama Kartı */}
+            <div className="w-full bg-blue-950/30 border border-blue-800/40 p-4 rounded-sm text-center shadow-lg backdrop-blur-sm">
+              <p className="text-sm text-blue-200 leading-relaxed">
+                I'm the director of Æ Labs. Ask me anything!
+              </p>
+            </div>
+
+            {/* Gönderilen Mesajlar Listesi */}
+            <div className="w-full space-y-2 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
+              {messages.map((msg, index) => (
+                <div
+                  key={index}
+                  className="bg-blue-900/20 border border-blue-800/30 p-2.5 rounded-sm text-xs text-blue-100 break-words"
+                >
+                  {msg}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === "links" && (
+          <div className="w-full space-y-2">
+            <a href="#" className="block w-full bg-blue-950/30 border border-blue-800/40 p-3 rounded-sm text-center text-xs hover:bg-blue-900/40 transition">
+              Twitter / X
+            </a>
+            <a href="#" className="block w-full bg-blue-950/30 border border-blue-800/40 p-3 rounded-sm text-center text-xs hover:bg-blue-900/40 transition">
+              GitHub
+            </a>
+          </div>
+        )}
+
+        {activeTab === "gift" && (
+          <div className="w-full bg-blue-950/30 border border-blue-800/40 p-4 rounded-sm text-center text-xs">
+            Send support or gifts via crypto address.
+          </div>
+        )}
+      </div>
+
+      {/* Alt Chat Girdisi */}
+      {activeTab === "chat" && (
+        <form onSubmit={handleSend} className="w-full max-w-md z-10 my-4">
+          <input
+            type="text"
+            value={inputMsg}
+            onChange={(e) => setInputMsg(e.target.value)}
+            placeholder="ask me anything..."
+            className="w-full bg-blue-950/20 border border-blue-900/60 rounded-sm px-4 py-3 text-sm text-blue-100 placeholder-blue-400/40 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 backdrop-blur-md transition-all"
+          />
+        </form>
+      )}
     </div>
   );
-}
+              }
+
