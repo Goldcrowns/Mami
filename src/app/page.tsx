@@ -1,15 +1,47 @@
 'use client';
 
 import { useState } from 'react';
-import { User, Send, MessageSquare, Link } from 'lucide-react';
+import { User, Send, MessageSquare, Link as LinkIcon, Instagram } from 'lucide-react';
+
+// TikTok ikonu için özel SVG bileşeni
+const TikTokIcon = ({ size = 18 }: { size?: number }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+  </svg>
+);
 
 export default function Home() {
   const [tab, setTab] = useState<'chat' | 'links'>('chat');
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Array<{ role: string; text: string }>>([
-    { role: 'assistant', text: "I'm the director of Æ Labs. Ask me anything!" },
+    { role: 'assistant', text: "I'm Mami. Ask me anything!" },
   ]);
   const [loading, setLoading] = useState(false);
+
+  // Sosyal medya bağlantıların
+  const socialLinks = [
+    {
+      name: 'Instagram',
+      url: 'https://instagram.com/muhammetemindadak',
+      icon: <Instagram size={18} />,
+      color: 'hover:border-pink-500/50 hover:text-pink-400',
+    },
+    {
+      name: 'TikTok',
+      url: 'https://tiktok.com/@m.emindadak',
+      icon: <TikTokIcon size={18} />,
+      color: 'hover:border-cyan-500/50 hover:text-cyan-400',
+    },
+  ];
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
@@ -63,24 +95,22 @@ export default function Home() {
               tab === 'links' ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/40' : 'text-slate-400 hover:text-white'
             }`}
           >
-            <Link size={16} /> links
+            <LinkIcon size={16} /> links
           </button>
+        </div>
+
+        {/* Profil İkonu & İsim (Tüm sekmelerde görünür) */}
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-28 h-28 border-2 border-blue-500/40 rounded-xl overflow-hidden bg-slate-900/90 shadow-lg shadow-blue-500/10 flex items-center justify-center text-blue-400">
+            <User size={56} />
+          </div>
+          <h1 className="text-xl tracking-widest text-slate-200">kuzey</h1>
         </div>
 
         {tab === 'chat' && (
           <>
-            {/* Profil İkonu / Avatar Alanı */}
-            <div className="relative">
-              <div className="w-28 h-28 border-2 border-blue-500/40 rounded-xl overflow-hidden bg-slate-900/90 shadow-lg shadow-blue-500/10 flex items-center justify-center text-blue-400">
-                <User size={56} />
-              </div>
-            </div>
-
-            {/* İsim */}
-            <h1 className="text-xl tracking-widest text-slate-200">kuzey</h1>
-
             {/* Mesaj Akışı */}
-            <div className="w-full space-y-3 max-h-[45vh] overflow-y-auto px-1">
+            <div className="w-full space-y-3 max-h-[40vh] overflow-y-auto px-1">
               {messages.map((msg, index) => (
                 <div
                   key={index}
@@ -121,11 +151,25 @@ export default function Home() {
         )}
 
         {tab === 'links' && (
-          <div className="w-full text-center text-slate-400 py-8">
-            Bağlantılar buraya gelecek.
+          <div className="w-full space-y-3 px-1">
+            {socialLinks.map((link, index) => (
+              <a
+                key={index}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex items-center justify-between p-4 bg-slate-900/80 border border-slate-800 rounded-lg text-slate-200 transition-all backdrop-blur-md ${link.color}`}
+              >
+                <span className="flex items-center gap-3 font-medium">
+                  {link.icon}
+                  {link.name}
+                </span>
+                <span className="text-xs text-slate-500">→</span>
+              </a>
+            ))}
           </div>
         )}
       </div>
     </main>
   );
-        }
+}
