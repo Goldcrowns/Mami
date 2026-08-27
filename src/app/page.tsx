@@ -96,7 +96,7 @@ export default function Home() {
       {/* Arka plan siber kare deseni */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-20 pointer-events-none" />
 
-      <div className="w-full max-w-md flex flex-col items-center gap-6 z-10 pt-4 pb-24">
+      <div className="w-full max-w-md flex flex-col items-center gap-6 z-10 pt-4 pb-28">
         {/* Tab Menüsü */}
         <div className="flex bg-[#0f172a]/80 border border-blue-900/50 rounded-lg p-1 w-full text-center">
           <button
@@ -122,13 +122,13 @@ export default function Home() {
           <div className="w-28 h-28 border-2 border-blue-500/40 rounded-xl overflow-hidden bg-slate-900/90 shadow-lg shadow-blue-500/10 flex items-center justify-center text-blue-400">
             <User size={56} />
           </div>
-          <h1 className="text-xl tracking-widest text-slate-200">Mami</h1>
+          <h1 className="text-xl tracking-widest text-slate-200">kuzey</h1>
         </div>
 
         {tab === 'chat' && (
           <>
             {/* Mesaj Akışı */}
-            <div className="w-full space-y-3 max-h-[40vh] overflow-y-auto px-1">
+            <div className="w-full space-y-3 max-h-[38vh] overflow-y-auto px-1">
               {messages.map((msg, index) => (
                 <div
                   key={index}
@@ -144,7 +144,7 @@ export default function Home() {
             </div>
 
             {/* İkonlu Input Kutusu */}
-            <div className="w-full fixed bottom-6 max-w-md px-4 z-20">
+            <div className="w-full fixed bottom-12 max-w-md px-4 z-20">
               <div className="relative flex items-center">
                 <User className="absolute left-3 text-slate-500" size={18} />
                 <input
@@ -152,7 +152,7 @@ export default function Home() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                  placeholder={loading ? 'Bekle...' : 'ask me anything...'}
+                  placeholder={loading ? 'Düşünüyor...' : 'ask me anything...'}
                   disabled={loading}
                   className="w-full bg-[#0f172a]/90 border border-slate-700 rounded-lg pl-10 pr-10 py-3 text-sm text-slate-200 focus:outline-none focus:border-blue-500 backdrop-blur-md placeholder:text-slate-500 shadow-xl"
                 />
@@ -187,7 +187,16 @@ export default function Home() {
             ))}
           </div>
         )}
+
+        {/* Footer: Powered by & Gizlilik Uyarısı */}
+        <footer className="w-full fixed bottom-2 text-center text-[10px] text-slate-500/80 px-4 space-y-0.5 pointer-events-auto z-10">
+          <p>Powered by <span className="text-blue-400 font-semibold">Gemini API</span></p>
+          <p className="max-w-xs mx-auto line-clamp-1 hover:line-clamp-none transition-all">
+            Gizlilik Politikası: Girilen mesajlar yapay zekâ modeline iletilir. Kişisel veri paylaşmayınız.
+          </p>
+        </footer>
       </div>
     </main>
   );
-}
+                  }
+                
