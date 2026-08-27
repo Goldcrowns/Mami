@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { User, Send, MessageSquare, Link as LinkIcon } from 'lucide-react';
 
 // TikTok SVG İkonu
@@ -41,7 +42,7 @@ export default function Home() {
   const [tab, setTab] = useState<'chat' | 'links'>('chat');
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Array<{ role: string; text: string }>>([
-    { role: 'assistant', text: "I'm Mami. Ask me anything!" },
+    { role: 'assistant', text: "Sen sade ve kısa yanıtlar veren bir asistansın. Gereksiz uzatmalardan ve kişisel ifadelerden kaçın. İsmin Mami" },
   ]);
   const [loading, setLoading] = useState(false);
 
@@ -96,7 +97,7 @@ export default function Home() {
       {/* Arka plan siber kare deseni */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-20 pointer-events-none" />
 
-      <div className="w-full max-w-md flex flex-col items-center gap-6 z-10 pt-4 pb-28">
+      <div className="w-full max-w-md flex flex-col items-center gap-6 z-10 pt-4 pb-32">
         {/* Tab Menüsü */}
         <div className="flex bg-[#0f172a]/80 border border-blue-900/50 rounded-lg p-1 w-full text-center">
           <button
@@ -117,7 +118,7 @@ export default function Home() {
           </button>
         </div>
 
-        {/* Profil İkonu & İsim (Tüm sekmelerde görünür) */}
+        {/* Profil İkonu & İsim */}
         <div className="flex flex-col items-center gap-3">
           <div className="w-28 h-28 border-2 border-blue-500/40 rounded-xl overflow-hidden bg-slate-900/90 shadow-lg shadow-blue-500/10 flex items-center justify-center text-blue-400">
             <User size={56} />
@@ -127,18 +128,24 @@ export default function Home() {
 
         {tab === 'chat' && (
           <>
-            {/* Mesaj Akışı */}
-            <div className="w-full space-y-3 max-h-[38vh] overflow-y-auto px-1">
+            {/* Görseldeki Gibi Düzenlenmiş Mesaj Akışı */}
+            <div className="w-full space-y-3 px-1">
               {messages.map((msg, index) => (
                 <div
                   key={index}
-                  className={`p-4 rounded border backdrop-blur-md text-sm ${
-                    msg.role === 'assistant'
-                      ? 'bg-blue-950/40 border-blue-800/40 text-blue-100 text-center'
-                      : 'bg-slate-900/80 border-slate-700/50 text-slate-200 text-right'
+                  className={`flex ${
+                    msg.role === 'assistant' ? 'justify-start' : 'justify-end'
                   }`}
                 >
-                  {msg.text}
+                  <div
+                    className={`p-3 rounded border backdrop-blur-md text-sm ${
+                      msg.role === 'assistant'
+                        ? 'w-full bg-blue-950/40 border-blue-800/40 text-blue-100 text-left'
+                        : 'bg-slate-900/90 border-slate-700/60 text-slate-200 text-right max-w-[80%]'
+                    }`}
+                  >
+                    {msg.text}
+                  </div>
                 </div>
               ))}
             </div>
@@ -188,15 +195,15 @@ export default function Home() {
           </div>
         )}
 
-        {/* Footer: Powered by & Gizlilik Uyarısı */}
-        <footer className="w-full fixed bottom-2 text-center text-[10px] text-slate-500/80 px-4 space-y-0.5 pointer-events-auto z-10">
-          <p>Powered by <span className="text-blue-400 font-semibold">Gemini API</span></p>
-          <p className="max-w-xs mx-auto line-clamp-1 hover:line-clamp-none transition-all">
-            Gizlilik Politikası: Girilen mesajlar yapay zekâ modeline iletilir. Kişisel veri paylaşmayınız.
-          </p>
+        {/* Footer: Powered by & Ayrı Sayfa Gizlilik Bağlantısı */}
+        <footer className="w-full fixed bottom-2 text-center text-[10px] text-slate-500/80 px-4 flex items-center justify-center gap-2 pointer-events-auto z-10">
+          <span>Powered by <span className="text-blue-400 font-semibold">Gemini </span></span>
+          <span>•</span>
+          <Link href="/privacy" className="hover:text-slate-300 underline">
+            Gizlilik Politikası
+          </Link>
         </footer>
       </div>
     </main>
   );
-                  }
-                
+}
