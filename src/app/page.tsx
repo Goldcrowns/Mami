@@ -93,7 +93,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#020617] text-white flex flex-col items-center p-4 font-mono relative overflow-hidden">
+    <main className="min-h-screen bg-[#090d16] text-white flex flex-col items-center p-4 font-mono relative overflow-hidden">
       {/* Arka plan siber kare deseni */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-20 pointer-events-none" />
 
@@ -148,6 +148,17 @@ export default function Home() {
                   </div>
                 </div>
               ))}
+
+              {/* Mesaj Gelirken 3 Nokta Yükleme Balonu */}
+              {loading && (
+                <div className="flex justify-start">
+                  <div className="w-full bg-blue-950/40 border border-blue-800/40 text-blue-300 p-3 rounded text-sm flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce"></span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* İkonlu Input Kutusu */}
@@ -159,7 +170,7 @@ export default function Home() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                  placeholder={loading ? 'One minute...' : 'Ask me anything...'}
+                  placeholder={loading ? 'Thinking...' : 'Ask me anything...'}
                   disabled={loading}
                   className="w-full bg-[#0f172a]/90 border border-slate-700 rounded-lg pl-10 pr-10 py-3 text-sm text-slate-200 focus:outline-none focus:border-blue-500 backdrop-blur-md placeholder:text-slate-500 shadow-xl"
                 />
@@ -168,7 +179,15 @@ export default function Home() {
                   disabled={loading}
                   className="absolute right-3 text-blue-400 hover:text-blue-300 transition-colors disabled:opacity-50"
                 >
-                  <Send size={18} />
+                  {loading ? (
+                    <span className="flex items-center gap-0.5 text-xs text-blue-400">
+                      <span className="w-1 h-1 bg-blue-400 rounded-full animate-ping"></span>
+                      <span className="w-1 h-1 bg-blue-400 rounded-full animate-ping [animation-delay:0.2s]"></span>
+                      <span className="w-1 h-1 bg-blue-400 rounded-full animate-ping [animation-delay:0.4s]"></span>
+                    </span>
+                  ) : (
+                    <Send size={18} />
+                  )}
                 </button>
               </div>
             </div>
