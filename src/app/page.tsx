@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { User, Send, MessageSquare, Link as LinkIcon, Globe, Gamepad2 } from 'lucide-react';
+import { User, Send, MessageSquare, Link as LinkIcon, Loaderpinwheel, Search } from 'lucide-react';
 
 // TikTok SVG İkonu
 const TikTokIcon = ({ size = 18 }: { size?: number }) => (
