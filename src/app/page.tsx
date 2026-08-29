@@ -14,7 +14,8 @@ import {
   Play,
   Pause,
   Volume2,
-  VolumeX
+  VolumeX,
+  Music
 } from 'lucide-react';
 
 // TikTok SVG İkonu
@@ -68,58 +69,95 @@ const YoutubeIcon = ({ size = 18 }: { size?: number }) => (
   </svg>
 );
 
-// Custom Audio Player Bileşeni
-function AudioPlayer({ src, trackTitle }: { src: string; trackTitle?: string }) {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+// Route API ve SoundCloud Widget API Bağlantılı Custom Audio Player
+function SoundCloudAudioPlayer({ trackUrl }: { trackUrl: string }) {
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const widgetRef = useRef<any>(null);
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.8);
   const [isMuted, setIsMuted] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+  const [meta, setMeta] = useState<{ title?: string; author_name?: string }>({});
+
+  // 1. /api/soundcloud Endpoint'inden Parça Bilgisi Çek
+  useEffect(() => {
+    async function fetchMeta() {
+      try {
+        const res = await fetch(`/api/soundcloud?url=${encodeURIComponent(trackUrl)}`);
+        const data = await res.json();
+        if (!data.error) {
+          setMeta({ title: data.title, author_name: data.author_name });
+        }
+      } catch (e) {
+        console.error('Route handler fetch error', e);
+      }
+    }
+    fetchMeta();
+  }, [trackUrl]);
+
+  // 2. SoundCloud Widget API Yükle & Event Binding
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://w.soundcloud.com/player/api.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    script.onload = () => {
+      if ((window as any).SC && iframeRef.current) {
+        const widget = (window as any).SC.Widget(iframeRef.current);
+        widgetRef.current = widget;
+
+        widget.bind((window as any).SC.Widget.Events.READY, () => {
+          setIsReady(true);
+          widget.getDuration((d: number) => setDuration(d / 1000));
+          widget.setVolume(volume * 100);
+        });
+
+        widget.bind((window as any).SC.Widget.Events.PLAY, () => setIsPlaying(true));
+        widget.bind((window as any).SC.Widget.Events.PAUSE, () => setIsPlaying(false));
+        widget.bind((window as any).SC.Widget.Events.FINISH, () => setIsPlaying(false));
+
+        widget.bind((window as any).SC.Widget.Events.PLAY_PROGRESS, (data: any) => {
+          setCurrentTime(data.currentPosition / 1000);
+        });
+      }
+    };
+  }, []);
 
   const togglePlay = () => {
-    if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  const handleTimeUpdate = () => {
-    if (audioRef.current) {
-      setCurrentTime(audioRef.current.currentTime);
-    }
-  };
-
-  const handleLoadedMetadata = () => {
-    if (audioRef.current) {
-      setDuration(audioRef.current.duration);
-    }
+    if (!widgetRef.current || !isReady) return;
+    widgetRef.current.toggle();
   };
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const time = parseFloat(e.target.value);
-    if (audioRef.current) {
-      audioRef.current.currentTime = time;
-      setCurrentTime(time);
+    const timeInSec = parseFloat(e.target.value);
+    setCurrentTime(timeInSec);
+    if (widgetRef.current && isReady) {
+      widgetRef.current.seekTo(timeInSec * 1000);
     }
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseFloat(e.target.value);
     setVolume(val);
-    if (audioRef.current) {
-      audioRef.current.volume = val;
-      setIsMuted(val === 0);
+    setIsMuted(val === 0);
+    if (widgetRef.current && isReady) {
+      widgetRef.current.setVolume(val * 100);
     }
   };
 
   const toggleMute = () => {
-    if (!audioRef.current) return;
-    audioRef.current.muted = !isMuted;
-    setIsMuted(!isMuted);
+    if (!widgetRef.current || !isReady) return;
+    if (isMuted) {
+      widgetRef.current.setVolume(volume * 100);
+      setIsMuted(false);
+    } else {
+      widgetRef.current.setVolume(0);
+      setIsMuted(true);
+    }
   };
 
   const formatTime = (secs: number) => {
@@ -130,30 +168,36 @@ function AudioPlayer({ src, trackTitle }: { src: string; trackTitle?: string }) 
   };
 
   return (
-    <div className="w-full bg-[#0f172a]/90 border border-blue-900/60 rounded-xl p-4 shadow-xl backdrop-blur-md flex flex-col gap-3">
-      <audio
-        ref={audioRef}
-        src={src}
-        onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={handleLoadedMetadata}
-        onEnded={() => setIsPlaying(false)}
-      />
+    <div className="w-full bg-[#0f172a]/90 border border-blue-900/60 rounded-xl p-4 shadow-xl backdrop-blur-md flex flex-col gap-3 relative">
+      {/* Gizli Iframe (Arka planda SoundCloud API ile köprü kurar) */}
+      <iframe
+        ref={iframeRef}
+        className="absolute w-1 h-1 opacity-0 pointer-events-none -z-50"
+        src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(trackUrl)}&auto_play=false`}
+        allow="autoplay"
+      ></iframe>
 
       {/* Parça İsmi */}
-      {trackTitle && (
-        <div className="text-xs font-semibold text-blue-400 tracking-wider truncate">
-          🎵 {trackTitle}
-        </div>
-      )}
+      <div className="text-xs font-semibold text-blue-400 tracking-wider truncate flex items-center gap-2">
+        <Music size={14} className={`text-blue-400 ${isPlaying ? 'animate-spin' : ''}`} />
+        <span className="truncate">{meta.title || 'Gimme More (Kim Thomas Remix)'}</span>
+      </div>
 
       {/* Ana Kontroller & İlerleme Çubuğu */}
       <div className="flex items-center gap-3">
         {/* Play/Pause Butonu */}
         <button
           onClick={togglePlay}
-          className="p-2.5 rounded-lg bg-blue-600/30 text-blue-300 border border-blue-500/40 hover:bg-blue-600/50 hover:text-white transition-all flex-shrink-0"
+          disabled={!isReady}
+          className="p-2.5 rounded-lg bg-blue-600/30 text-blue-300 border border-blue-500/40 hover:bg-blue-600/50 hover:text-white transition-all flex-shrink-0 disabled:opacity-50"
         >
-          {isPlaying ? <Pause size={18} /> : <Play size={18} className="ml-0.5" />}
+          {!isReady ? (
+            <LoaderPinwheel size={18} className="animate-spin" />
+          ) : isPlaying ? (
+            <Pause size={18} />
+          ) : (
+            <Play size={18} className="ml-0.5" />
+          )}
         </button>
 
         {/* İlerleme Çubuğu + Zaman */}
@@ -165,7 +209,8 @@ function AudioPlayer({ src, trackTitle }: { src: string; trackTitle?: string }) 
             step={0.1}
             value={currentTime}
             onChange={handleSeek}
-            className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
+            disabled={!isReady}
+            className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500 disabled:opacity-50"
           />
           <div className="flex justify-between text-[10px] text-slate-400">
             <span>{formatTime(currentTime)}</span>
@@ -177,7 +222,8 @@ function AudioPlayer({ src, trackTitle }: { src: string; trackTitle?: string }) 
         <div className="flex items-center gap-1.5">
           <button
             onClick={toggleMute}
-            className="text-slate-400 hover:text-blue-300 transition-colors p-1"
+            disabled={!isReady}
+            className="text-slate-400 hover:text-blue-300 transition-colors p-1 disabled:opacity-50"
           >
             {isMuted || volume === 0 ? <VolumeX size={16} /> : <Volume2 size={16} />}
           </button>
@@ -188,7 +234,8 @@ function AudioPlayer({ src, trackTitle }: { src: string; trackTitle?: string }) 
             step={0.05}
             value={isMuted ? 0 : volume}
             onChange={handleVolumeChange}
-            className="w-14 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500 hidden sm:block"
+            disabled={!isReady}
+            className="w-14 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500 hidden sm:block disabled:opacity-50"
           />
         </div>
       </div>
@@ -203,6 +250,9 @@ export default function Home() {
     { role: 'assistant', text: "I'm Mami. Ask me anything!" },
   ]);
   const [loading, setLoading] = useState(false);
+
+  // SoundCloud Parça Adresi
+  const trackUrl = "https://soundcloud.com/kim-thomas-620577821/britney-spears-gimme-more-kim-thomas-remix";
 
   // Sosyal medya ve proje bağlantıların
   const socialLinks = [
@@ -302,11 +352,8 @@ export default function Home() {
           <h1 className="text-xl tracking-widest text-slate-200">mami</h1>
         </div>
 
-        {/* Ses Oynatıcı (Audio Player) */}
-        <AudioPlayer 
-          src="/audio/my-track.mp3" // public/audio/my-track.mp3 dosya yolunu kendi ses dosyan ile güncelle
-          trackTitle="My Track / Beat" 
-        />
+        {/* Route API Entegreli SoundCloud Oynatıcı */}
+        <SoundCloudAudioPlayer trackUrl={trackUrl} />
 
         {tab === 'chat' && (
           <>
@@ -402,4 +449,4 @@ export default function Home() {
       </div>
     </main>
   );
-    }
+        }
