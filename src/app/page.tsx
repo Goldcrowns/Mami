@@ -9,7 +9,8 @@ import {
   Link as LinkIcon, 
   Globe, 
   Gamepad2, 
-  LoaderPinwheel 
+  LoaderPinwheel,
+  Search
 } from 'lucide-react';
 
 // TikTok SVG İkonu
