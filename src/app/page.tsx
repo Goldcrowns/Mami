@@ -2,7 +2,15 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { User, Send, MessageSquare, Link as LinkIcon, LoaderPinwheel, Search } from 'lucide-react';
+import { 
+  User, 
+  Send, 
+  MessageSquare, 
+  Link as LinkIcon, 
+  Globe, 
+  Gamepad2, 
+  LoaderPinwheel 
+} from 'lucide-react';
 
 // TikTok SVG İkonu
 const TikTokIcon = ({ size = 18 }: { size?: number }) => (
@@ -164,10 +172,9 @@ export default function Home() {
               {/* Yükleme Balonu */}
               {loading && (
                 <div className="flex justify-start">
-                  <div className="w-full bg-blue-950/40 border border-blue-800/40 text-blue-300 p-3 rounded text-sm flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce"></span>
+                  <div className="w-full bg-blue-950/40 border border-blue-800/40 text-blue-300 p-3 rounded text-sm flex items-center gap-2">
+                    <LoaderPinwheel className="w-4 h-4 animate-spin text-blue-400" />
+                    <span>Düşünüyor...</span>
                   </div>
                 </div>
               )}
@@ -192,11 +199,7 @@ export default function Home() {
                   className="absolute right-3 text-blue-400 hover:text-blue-300 transition-colors disabled:opacity-50"
                 >
                   {loading ? (
-                    <span className="flex items-center gap-0.5 text-xs text-blue-400">
-                      <span className="w-1 h-1 bg-blue-400 rounded-full animate-ping"></span>
-                      <span className="w-1 h-1 bg-blue-400 rounded-full animate-ping [animation-delay:0.2s]"></span>
-                      <span className="w-1 h-1 bg-blue-400 rounded-full animate-ping [animation-delay:0.4s]"></span>
-                    </span>
+                    <LoaderPinwheel className="w-[18px] h-[18px] animate-spin" />
                   ) : (
                     <Send size={18} />
                   )}
@@ -237,4 +240,4 @@ export default function Home() {
       </div>
     </main>
   );
-            }
+}
