@@ -88,7 +88,7 @@ export default function Home() {
     },
     {
       name: 'YouTube',
-      url: 'https://youtube.com/@mamicikle',
+      url: 'https://youtube.com/@Olystear',
       icon: <YoutubeIcon size={18} />,
       color: 'hover:border-red-600/50 hover:text-red-500',
     },
