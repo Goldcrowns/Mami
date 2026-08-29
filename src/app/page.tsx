@@ -10,7 +10,8 @@ import {
   Globe, 
   Gamepad2, 
   LoaderPinwheel,
-  Search
+  Search,
+  Youtube
 } from 'lucide-react';
 
 // TikTok SVG İkonu
@@ -68,6 +69,12 @@ export default function Home() {
       url: 'https://whodunnit.duckdns.org',
       icon: <Search size={18} />,
       color: 'hover:border-red-500/50 hover:text-red-400',
+    },
+    {
+      name: 'YouTube',
+      url: 'https://youtube.com/@mamicikle',
+      icon: <Youtube size={18} />,
+      color: 'hover:border-red-600/50 hover:text-red-500',
     },
     {
       name: 'Instagram',
@@ -241,4 +248,4 @@ export default function Home() {
       </div>
     </main>
   );
-}
+                }
