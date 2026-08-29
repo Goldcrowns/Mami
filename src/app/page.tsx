@@ -1,21 +1,14 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { 
   User, 
   Send, 
   MessageSquare, 
   Link as LinkIcon, 
-  Globe, 
-  Gamepad2, 
   LoaderPinwheel,
-  Search,
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  Music
+  Search
 } from 'lucide-react';
 
 // TikTok SVG İkonu
@@ -69,97 +62,6 @@ const YoutubeIcon = ({ size = 18 }: { size?: number }) => (
   </svg>
 );
 
-// Route API ve SoundCloud Widget API Bağlantılı Custom Audio Player
-function SoundCloudAudioPlayer({ trackUrl }: { trackUrl: string }) {
-  const iframeRef = useRef<HTMLIFrameElement | null>(null);
-  const widgetRef = useRef<any>(null);
-
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(0.8);
-  const [isMuted, setIsMuted] = useState(false);
-  const [isReady, setIsReady] = useState(false);
-  const [meta, setMeta] = useState<{ title?: string; author_name?: string }>({});
-
-  // 1. /api/soundcloud Endpoint'inden Parça Bilgisi Çek
-  useEffect(() => {
-    async function fetchMeta() {
-      try {
-        const res = await fetch(`/api/soundcloud?url=${encodeURIComponent(trackUrl)}`);
-        const data = await res.json();
-        if (!data.error) {
-          setMeta({ title: data.title, author_name: data.author_name });
-        }
-      } catch (e) {
-        console.error('Route handler fetch error', e);
-      }
-    }
-    fetchMeta();
-  }, [trackUrl]);
-
-  // 2. SoundCloud Widget API Yükle & Event Binding
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://w.soundcloud.com/player/api.js';
-    script.async = true;
-    document.body.appendChild(script);
-
-    script.onload = () => {
-      if ((window as any).SC && iframeRef.current) {
-        const widget = (window as any).SC.Widget(iframeRef.current);
-        widgetRef.current = widget;
-
-        widget.bind((window as any).SC.Widget.Events.READY, () => {
-          setIsReady(true);
-          widget.getDuration((d: number) => setDuration(d / 1000));
-          widget.setVolume(volume * 100);
-        });
-
-        widget.bind((window as any).SC.Widget.Events.PLAY, () => setIsPlaying(true));
-        widget.bind((window as any).SC.Widget.Events.PAUSE, () => setIsPlaying(false));
-        widget.bind((window as any).SC.Widget.Events.FINISH, () => setIsPlaying(false));
-
-        widget.bind((window as any).SC.Widget.Events.PLAY_PROGRESS, (data: any) => {
-          setCurrentTime(data.currentPosition / 1000);
-        });
-      }
-    };
-  }, []);
-
-  const togglePlay = () => {
-    if (!widgetRef.current || !isReady) return;
-    widgetRef.current.toggle();
-  };
-
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const timeInSec = parseFloat(e.target.value);
-    setCurrentTime(timeInSec);
-    if (widgetRef.current && isReady) {
-      widgetRef.current.seekTo(timeInSec * 1000);
-    }
-  };
-
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = parseFloat(e.target.value);
-    setVolume(val);
-    setIsMuted(val === 0);
-    if (widgetRef.current && isReady) {
-      widgetRef.current.setVolume(val * 100);
-    }
-  };
-
-  const toggleMute = () => {
-    if (!widgetRef.current || !isReady) return;
-    if (isMuted) {
-      widgetRef.current.setVolume(volume * 100);
-      setIsMuted(false);
-    } else {
-      widgetRef.current.setVolume(0);
-      setIsMuted(true);
-    }
-  };
-
 export default function Home() {
   const [tab, setTab] = useState<'chat' | 'links'>('chat');
   const [input, setInput] = useState('');
@@ -167,9 +69,6 @@ export default function Home() {
     { role: 'assistant', text: "I'm Mami. Ask me anything!" },
   ]);
   const [loading, setLoading] = useState(false);
-
-  // SoundCloud Parça Adresi
-  const trackUrl = "https://soundcloud.com/kim-thomas-620577821/britney-spears-gimme-more-kim-thomas-remix";
 
   // Sosyal medya ve proje bağlantıların
   const socialLinks = [
@@ -269,9 +168,6 @@ export default function Home() {
           <h1 className="text-xl tracking-widest text-slate-200">mami</h1>
         </div>
 
-        {/* Route API Entegreli SoundCloud Oynatıcı */}
-        <SoundCloudAudioPlayer trackUrl={trackUrl} />
-
         {tab === 'chat' && (
           <>
             {/* Mesaj Akışı */}
@@ -366,4 +262,4 @@ export default function Home() {
       </div>
     </main>
   );
-        }
+}
