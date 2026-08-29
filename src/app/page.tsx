@@ -59,13 +59,13 @@ export default function Home() {
     {
       name: 'Olyster AI',
       url: 'https://olyster.vercel.app',
-      icon: <Globe size={18} />,
+      icon: <LoaderPinwheel size={18} />,
       color: 'hover:border-purple-500/50 hover:text-purple-400',
     },
     {
       name: 'Whodunnit',
       url: 'https://whodunnit.duckdns.org',
-      icon: <Gamepad2 size={18} />,
+      icon: <Search size={18} />,
       color: 'hover:border-red-500/50 hover:text-red-400',
     },
     {
