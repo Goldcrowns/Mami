@@ -7,11 +7,11 @@ import {
   Send, 
   MessageSquare, 
   Link as LinkIcon, 
-  Globe, 
-  Gamepad2, 
   LoaderPinwheel,
   Search,
-  Music
+  Music,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 
 // TikTok SVG İkonu
@@ -66,14 +66,16 @@ const YoutubeIcon = ({ size = 18 }: { size?: number }) => (
 );
 
 export default function Home() {
-  const [tab, setTab] = useState<'chat' | 'links' | 'music'>('chat');
+  const [tab, setTab] = useState<'chat' | 'links'>('chat');
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Array<{ role: string; text: string }>>([
     { role: 'assistant', text: "I'm Mami. Ask me anything!" },
   ]);
   const [loading, setLoading] = useState(false);
+  
+  // Mini Müzik Çalar Gizle/Göster Durumu
+  const [isPlayerOpen, setIsPlayerOpen] = useState(true);
 
-  // Sosyal medya ve proje bağlantıların
   const socialLinks = [
     {
       name: 'Olyster AI',
@@ -147,7 +149,7 @@ export default function Home() {
         <div className="flex bg-[#0f172a]/80 border border-blue-900/50 rounded-lg p-1 w-full text-center">
           <button
             onClick={() => setTab('chat')}
-            className={`flex-1 py-1.5 text-xs md:text-sm rounded transition-all flex items-center justify-center gap-1.5 ${
+            className={`flex-1 py-1.5 text-sm rounded transition-all flex items-center justify-center gap-2 ${
               tab === 'chat' ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/40' : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -155,19 +157,11 @@ export default function Home() {
           </button>
           <button
             onClick={() => setTab('links')}
-            className={`flex-1 py-1.5 text-xs md:text-sm rounded transition-all flex items-center justify-center gap-1.5 ${
+            className={`flex-1 py-1.5 text-sm rounded transition-all flex items-center justify-center gap-2 ${
               tab === 'links' ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/40' : 'text-slate-400 hover:text-white'
             }`}
           >
             <LinkIcon size={16} /> links
-          </button>
-          <button
-            onClick={() => setTab('music')}
-            className={`flex-1 py-1.5 text-xs md:text-sm rounded transition-all flex items-center justify-center gap-1.5 ${
-              tab === 'music' ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/40' : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <Music size={16} /> music
           </button>
         </div>
 
@@ -212,7 +206,6 @@ export default function Home() {
                 </div>
               )}
             </div>
-
             {/* Input Kutusu */}
             <div className="w-full fixed bottom-12 max-w-md px-4 z-20">
               <div className="relative flex items-center">
@@ -262,30 +255,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* Music Tab (Spotify Embed) */}
-        {tab === 'music' && (
-          <div className="w-full space-y-4 px-1">
-            <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-xl backdrop-blur-md flex flex-col gap-3">
-              <div className="flex items-center gap-2 text-slate-300 text-sm font-semibold">
-                <Music size={18} className="text-blue-400" />
-                <span>Britney Spears - Gimme More</span>
-              </div>
-              <div className="w-full rounded-xl overflow-hidden border border-slate-800">
-                <iframe
-                  style={{ borderRadius: "12px" }}
-                  src="https://open.spotify.com/embed/track/6ic8OlLUNEATToEFU3xmaH?utm_source=generator&theme=0"
-                  width="100%"
-                  height="152"
-                  frameBorder="0"
-                  allowFullScreen
-                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                  loading="lazy"
-                ></iframe>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Footer */}
         <footer className="w-full fixed bottom-2 text-center text-[10px] text-slate-500/80 px-4 flex items-center justify-center gap-2 pointer-events-auto z-10">
           <span>Powered by <span className="text-blue-400 font-semibold">Gemini </span></span>
@@ -294,6 +263,39 @@ export default function Home() {
             Gizlilik Politikası
           </Link>
         </footer>
+      </div>
+
+      {/* ARKA PLAN MİNİ SPOTIFY OYNATICI (Fixed - Sağ Alt / Sol Alt) */}
+      <div className="fixed bottom-14 right-4 z-30 max-w-[280px] w-full bg-[#0f172a]/95 border border-blue-900/60 rounded-xl shadow-2xl backdrop-blur-md overflow-hidden transition-all duration-300">
+        {/* Üst Küçük Bar */}
+        <div 
+          onClick={() => setIsPlayerOpen(!isPlayerOpen)}
+          className="flex items-center justify-between px-3 py-1.5 bg-blue-950/40 cursor-pointer border-b border-slate-800/80 hover:bg-blue-900/30 transition"
+        >
+          <div className="flex items-center gap-2 text-xs text-blue-300 font-medium truncate">
+            <Music size={14} className="text-blue-400 animate-pulse flex-shrink-0" />
+            <span className="truncate">Gimme More - Britney</span>
+          </div>
+          <button className="text-slate-400 hover:text-white p-0.5">
+            {isPlayerOpen ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
+          </button>
+        </div>
+
+        {/* Küçük Oynatıcı Gövdesi */}
+        {isPlayerOpen && (
+          <div className="p-1 bg-[#090d16]">
+            <iframe
+              style={{ borderRadius: "8px" }}
+              src="https://open.spotify.com/embed/track/6ic8OlLUNEATToEFU3xmaH?utm_source=generator&theme=0"
+              width="100%"
+              height="80"
+              frameBorder="0"
+              allowFullScreen
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+            ></iframe>
+          </div>
+        )}
       </div>
     </main>
   );
