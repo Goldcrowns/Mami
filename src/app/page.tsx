@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   User, 
@@ -10,6 +10,8 @@ import {
   LoaderPinwheel,
   Search,
   Music,
+  Play,
+  Pause,
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
@@ -73,8 +75,32 @@ export default function Home() {
   ]);
   const [loading, setLoading] = useState(false);
   
-  // Mini Müzik Çalar Gizle/Göster Durumu
+  // Mini Müzik Çalar Durumları
+  const [isPlaying, setIsPlaying] = useState(false);
   const [isPlayerOpen, setIsPlayerOpen] = useState(true);
+  const [progress, setProgress] = useState(0);
+
+  // Müzik İlerleme Simülasyonu
+  useEffect(() => {
+    let interval: any;
+    if (isPlaying) {
+      interval = setInterval(() => {
+        setProgress((prev) => (prev >= 100 ? 0 : prev + 1));
+      }, 500);
+    } else {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [isPlaying]);
+
+  // İlerleme çubuğunu ASCII formatında çizme
+  const renderProgressBar = () => {
+    const totalBars = 12;
+    const filledBars = Math.floor((progress / 100) * totalBars);
+    const line = Array(totalBars).fill('-');
+    line[filledBars] = '•';
+    return line.join('');
+  };
 
   const socialLinks = [
     {
@@ -206,6 +232,7 @@ export default function Home() {
                 </div>
               )}
             </div>
+
             {/* Input Kutusu */}
             <div className="w-full fixed bottom-12 max-w-md px-4 z-20">
               <div className="relative flex items-center">
@@ -265,15 +292,15 @@ export default function Home() {
         </footer>
       </div>
 
-      {/* ARKA PLAN MİNİ SPOTIFY OYNATICI (Fixed - Sağ Alt / Sol Alt) */}
-      <div className="fixed bottom-14 right-4 z-30 max-w-[280px] w-full bg-[#0f172a]/95 border border-blue-900/60 rounded-xl shadow-2xl backdrop-blur-md overflow-hidden transition-all duration-300">
-        {/* Üst Küçük Bar */}
+      {/* TERMINAL / ASCII STİLİ MİNİ SPOTIFY BAR (Fixed) */}
+      <div className="fixed bottom-14 right-4 z-30 max-w-[280px] w-full bg-[#0d1322]/95 border border-blue-900/60 rounded-xl shadow-2xl backdrop-blur-md overflow-hidden font-mono">
+        {/* Üst Bar */}
         <div 
           onClick={() => setIsPlayerOpen(!isPlayerOpen)}
-          className="flex items-center justify-between px-3 py-1.5 bg-blue-950/40 cursor-pointer border-b border-slate-800/80 hover:bg-blue-900/30 transition"
+          className="flex items-center justify-between px-3 py-1.5 bg-blue-950/40 cursor-pointer border-b border-blue-900/40 hover:bg-blue-900/30 transition"
         >
-          <div className="flex items-center gap-2 text-xs text-blue-300 font-medium truncate">
-            <Music size={14} className="text-blue-400 animate-pulse flex-shrink-0" />
+          <div className="flex items-center gap-2 text-xs text-blue-300 font-semibold truncate">
+            <Music size={13} className={`text-blue-400 ${isPlaying ? 'animate-spin' : ''}`} />
             <span className="truncate">Gimme More - Britney</span>
           </div>
           <button className="text-slate-400 hover:text-white p-0.5">
@@ -281,22 +308,46 @@ export default function Home() {
           </button>
         </div>
 
-        {/* Küçük Oynatıcı Gövdesi */}
+        {/* ASCII İlerleme Çubuğu & Kontrol Alanı */}
         {isPlayerOpen && (
-          <div className="p-1 bg-[#090d16]">
-            <iframe
-              style={{ borderRadius: "8px" }}
-              src="https://open.spotify.com/embed/track/6ic8OlLUNEATToEFU3xmaH?utm_source=generator&theme=0"
-              width="100%"
-              height="80"
-              frameBorder="0"
-              allowFullScreen
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              loading="lazy"
-            ></iframe>
+          <div className="p-3 bg-[#090d16] flex flex-col gap-2">
+            {/* ASCII Zaman Barı */}
+            <div className="flex items-center justify-between text-[11px] text-blue-400 font-mono tracking-tight bg-slate-950/80 p-2 rounded border border-slate-800/80">
+              <span className="text-slate-300 font-bold">
+                {Math.floor((progress * 2.1) / 60)}:{((Math.floor(progress * 2.1) % 60) + '').padStart(2, '0')}
+              </span>
+              <span className="text-blue-400 font-extrabold tracking-widest px-1">
+                &gt;{renderProgressBar()}
+              </span>
+              <span className="text-slate-500">03:30</span>
+            </div>
+
+            {/* Kontrol / Oynatma Butonu ve Spotify Iframe */}
+            <div className="flex items-center justify-between gap-2 pt-1">
+              <button
+                onClick={() => setIsPlaying(!isPlaying)}
+                className="flex items-center gap-1.5 px-3 py-1 bg-blue-600/20 border border-blue-500/40 hover:bg-blue-600/40 text-blue-300 rounded text-xs transition font-bold"
+              >
+                {isPlaying ? <Pause size={12} /> : <Play size={12} />}
+                <span>{isPlaying ? 'PAUSE' : 'PLAY'}</span>
+              </button>
+
+              <span className="text-[10px] text-slate-500">SPOTIFY PLAYER</span>
+            </div>
+
+            {/* Arka Planda Çalışan Gizli Spotify Embed */}
+            <div className="h-0 w-0 opacity-0 overflow-hidden">
+              <iframe
+                src={`https://open.spotify.com/embed/track/6ic8OlLUNEATToEFU3xmaH?utm_source=generator&theme=0${isPlaying ? '&autoplay=1' : ''}`}
+                width="100%"
+                height="80"
+                frameBorder="0"
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              ></iframe>
+            </div>
           </div>
         )}
       </div>
     </main>
   );
-}
+              }
