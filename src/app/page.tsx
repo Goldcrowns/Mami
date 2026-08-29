@@ -1,19 +1,20 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Play, Pause, Music, ChevronDown, ChevronUp } from 'lucide-react';
+import { Play, Pause, Music, ChevronDown, ChevronUp, LoaderPinwheel } from 'lucide-react';
 
 export default function SoundCloudPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPlayerOpen, setIsPlayerOpen] = useState(true);
+  const [isReady, setIsReady] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const widgetRef = useRef<any>(null);
 
-  // Attığın Linkin Doğrudan SoundCloud Track ID'si
+  // Britney Spears - Gimme More (Kim Thomas Remix) Track ID
   const trackId = "341071239";
 
   useEffect(() => {
-    // SoundCloud Widget API Script yüklemesi
+    // SoundCloud Widget API Scriptini Yükle
     const script = document.createElement('script');
     script.src = 'https://w.soundcloud.com/player/api.js';
     script.async = true;
@@ -24,7 +25,11 @@ export default function SoundCloudPlayer() {
         const widget = (window as any).SC.Widget(iframeRef.current);
         widgetRef.current = widget;
 
-        // Oynatma Durumlarını Dinle
+        // Player tamamen yüklendiğinde hazır duruma getir
+        widget.bind((window as any).SC.Widget.Events.READY, () => {
+          setIsReady(true);
+        });
+
         widget.bind((window as any).SC.Widget.Events.PLAY, () => setIsPlaying(true));
         widget.bind((window as any).SC.Widget.Events.PAUSE, () => setIsPlaying(false));
         widget.bind((window as any).SC.Widget.Events.FINISH, () => setIsPlaying(false));
@@ -33,16 +38,16 @@ export default function SoundCloudPlayer() {
   }, []);
 
   const togglePlay = () => {
-    if (!widgetRef.current) return;
+    if (!widgetRef.current || !isReady) return;
     widgetRef.current.toggle();
   };
 
   return (
     <div className="fixed bottom-14 right-4 z-30 max-w-[280px] w-full bg-[#0d1322]/95 border border-blue-900/60 rounded-xl shadow-2xl backdrop-blur-md overflow-hidden font-mono">
-      {/* Track ID Doğrudan SoundCloud Widget API'ye Bağlandı */}
+      {/* Gizli ancak tarayıcı tarafından aktif algılanan Iframe */}
       <iframe
         ref={iframeRef}
-        className="hidden"
+        className="absolute -bottom-96 -right-96 w-1 h-1 opacity-0 pointer-events-none"
         src={`https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${trackId}&auto_play=false`}
         allow="autoplay"
       ></iframe>
@@ -69,19 +74,26 @@ export default function SoundCloudPlayer() {
             <span className="text-blue-400 font-extrabold tracking-widest px-1">
               {isPlaying ? '>---•--------' : '>------------'}
             </span>
-            <span className="text-slate-500">SOUNDCLOUD</span>
+            <span className="text-slate-500">{isReady ? 'READY' : 'LOADING'}</span>
           </div>
 
           {/* Oynat/Durdur Butonu */}
           <div className="flex items-center justify-between gap-2 pt-1">
             <button
               onClick={togglePlay}
-              className="flex items-center gap-1.5 px-3 py-1 bg-blue-600/20 border border-blue-500/40 hover:bg-blue-600/40 text-blue-300 rounded text-xs transition font-bold"
+              disabled={!isReady}
+              className="flex items-center gap-1.5 px-3 py-1 bg-blue-600/20 border border-blue-500/40 hover:bg-blue-600/40 text-blue-300 rounded text-xs transition font-bold disabled:opacity-50"
             >
-              {isPlaying ? <Pause size={12} /> : <Play size={12} />}
-              <span>{isPlaying ? 'PAUSE' : 'PLAY'}</span>
+              {!isReady ? (
+                <LoaderPinwheel className="w-3 h-3 animate-spin" />
+              ) : isPlaying ? (
+                <Pause size={12} />
+              ) : (
+                <Play size={12} />
+              )}
+              <span>{!isReady ? 'WAIT' : isPlaying ? 'PAUSE' : 'PLAY'}</span>
             </button>
-            <span className="text-[10px] text-slate-500">READY</span>
+            <span className="text-[10px] text-slate-500">SOUNDCLOUD</span>
           </div>
         </div>
       )}
