@@ -76,7 +76,7 @@ export default function Home() {
   const socialLinks = [
     {
       name: 'Olyster AI',
-      url: 'https://olyster.dedyn.io',
+      url: 'https://www.olyster.dedyn.io',
       icon: <LoaderPinwheel size={18} />,
       color: 'hover:border-purple-500/50 hover:text-purple-400',
     },
