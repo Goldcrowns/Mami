@@ -10,7 +10,8 @@ import {
   Globe, 
   Gamepad2, 
   LoaderPinwheel,
-  Search
+  Search,
+  Music
 } from 'lucide-react';
 
 // TikTok SVG İkonu
@@ -65,7 +66,7 @@ const YoutubeIcon = ({ size = 18 }: { size?: number }) => (
 );
 
 export default function Home() {
-  const [tab, setTab] = useState<'chat' | 'links'>('chat');
+  const [tab, setTab] = useState<'chat' | 'links' | 'music'>('chat');
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Array<{ role: string; text: string }>>([
     { role: 'assistant', text: "I'm Mami. Ask me anything!" },
@@ -146,7 +147,7 @@ export default function Home() {
         <div className="flex bg-[#0f172a]/80 border border-blue-900/50 rounded-lg p-1 w-full text-center">
           <button
             onClick={() => setTab('chat')}
-            className={`flex-1 py-1.5 text-sm rounded transition-all flex items-center justify-center gap-2 ${
+            className={`flex-1 py-1.5 text-xs md:text-sm rounded transition-all flex items-center justify-center gap-1.5 ${
               tab === 'chat' ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/40' : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -154,11 +155,19 @@ export default function Home() {
           </button>
           <button
             onClick={() => setTab('links')}
-            className={`flex-1 py-1.5 text-sm rounded transition-all flex items-center justify-center gap-2 ${
+            className={`flex-1 py-1.5 text-xs md:text-sm rounded transition-all flex items-center justify-center gap-1.5 ${
               tab === 'links' ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/40' : 'text-slate-400 hover:text-white'
             }`}
           >
             <LinkIcon size={16} /> links
+          </button>
+          <button
+            onClick={() => setTab('music')}
+            className={`flex-1 py-1.5 text-xs md:text-sm rounded transition-all flex items-center justify-center gap-1.5 ${
+              tab === 'music' ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/40' : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Music size={16} /> music
           </button>
         </div>
 
@@ -253,6 +262,30 @@ export default function Home() {
           </div>
         )}
 
+        {/* Music Tab (Spotify Embed) */}
+        {tab === 'music' && (
+          <div className="w-full space-y-4 px-1">
+            <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-xl backdrop-blur-md flex flex-col gap-3">
+              <div className="flex items-center gap-2 text-slate-300 text-sm font-semibold">
+                <Music size={18} className="text-blue-400" />
+                <span>Britney Spears - Gimme More</span>
+              </div>
+              <div className="w-full rounded-xl overflow-hidden border border-slate-800">
+                <iframe
+                  style={{ borderRadius: "12px" }}
+                  src="https://open.spotify.com/embed/track/6ic8OlLUNEATToEFU3xmaH?utm_source=generator&theme=0"
+                  width="100%"
+                  height="152"
+                  frameBorder="0"
+                  allowFullScreen
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  loading="lazy"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Footer */}
         <footer className="w-full fixed bottom-2 text-center text-[10px] text-slate-500/80 px-4 flex items-center justify-center gap-2 pointer-events-auto z-10">
           <span>Powered by <span className="text-blue-400 font-semibold">Gemini </span></span>
@@ -264,4 +297,4 @@ export default function Home() {
       </div>
     </main>
   );
-      }
+}
