@@ -9,8 +9,8 @@ export default function SoundCloudPlayer() {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const widgetRef = useRef<any>(null);
 
-  // SoundCloud Şarkı Track ID'n
-  const trackId = "177026135";
+  // Attığın Linkin Doğrudan SoundCloud Track ID'si
+  const trackId = "341071239";
 
   useEffect(() => {
     // SoundCloud Widget API Script yüklemesi
@@ -39,7 +39,7 @@ export default function SoundCloudPlayer() {
 
   return (
     <div className="fixed bottom-14 right-4 z-30 max-w-[280px] w-full bg-[#0d1322]/95 border border-blue-900/60 rounded-xl shadow-2xl backdrop-blur-md overflow-hidden font-mono">
-      {/* Track ID Doğrudan Iframe API URL'sine Bağlandı */}
+      {/* Track ID Doğrudan SoundCloud Widget API'ye Bağlandı */}
       <iframe
         ref={iframeRef}
         className="hidden"
@@ -54,7 +54,7 @@ export default function SoundCloudPlayer() {
       >
         <div className="flex items-center gap-2 text-xs text-blue-300 font-semibold truncate">
           <Music size={13} className={`text-blue-400 ${isPlaying ? 'animate-spin' : ''}`} />
-          <span className="truncate">SoundCloud Track #{trackId}</span>
+          <span className="truncate">Gimme More (Kim Thomas Remix)</span>
         </div>
         <button className="text-slate-400 hover:text-white p-0.5">
           {isPlayerOpen ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
@@ -81,7 +81,7 @@ export default function SoundCloudPlayer() {
               {isPlaying ? <Pause size={12} /> : <Play size={12} />}
               <span>{isPlaying ? 'PAUSE' : 'PLAY'}</span>
             </button>
-            <span className="text-[10px] text-slate-500">TRACK ID STREAM</span>
+            <span className="text-[10px] text-slate-500">READY</span>
           </div>
         </div>
       )}
