@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { User, Send, MessageSquare, Link as LinkIcon } from 'lucide-react';
+import { User, Send, MessageSquare, Link as LinkIcon, Globe, Gamepad2 } from 'lucide-react';
 
 // TikTok SVG İkonu
 const TikTokIcon = ({ size = 18 }: { size?: number }) => (
@@ -46,8 +46,20 @@ export default function Home() {
   ]);
   const [loading, setLoading] = useState(false);
 
-  // Sosyal medya bağlantıların
+  // Sosyal medya ve proje bağlantıların
   const socialLinks = [
+    {
+      name: 'Olyster AI',
+      url: 'https://olyster.vercel.app',
+      icon: <Globe size={18} />,
+      color: 'hover:border-purple-500/50 hover:text-purple-400',
+    },
+    {
+      name: 'Whodunnit',
+      url: 'https://whodunnit.duckdns.org',
+      icon: <Gamepad2 size={18} />,
+      color: 'hover:border-red-500/50 hover:text-red-400',
+    },
     {
       name: 'Instagram',
       url: 'https://instagram.com/mamicikle',
@@ -128,7 +140,7 @@ export default function Home() {
 
         {tab === 'chat' && (
           <>
-            {/* Görseldeki Gibi Düzenlenmiş Mesaj Akışı */}
+            {/* Mesaj Akışı */}
             <div className="w-full space-y-3 px-1">
               {messages.map((msg, index) => (
                 <div
@@ -149,7 +161,7 @@ export default function Home() {
                 </div>
               ))}
 
-              {/* Mesaj Gelirken 3 Nokta Yükleme Balonu */}
+              {/* Yükleme Balonu */}
               {loading && (
                 <div className="flex justify-start">
                   <div className="w-full bg-blue-950/40 border border-blue-800/40 text-blue-300 p-3 rounded text-sm flex items-center gap-1.5">
@@ -161,7 +173,7 @@ export default function Home() {
               )}
             </div>
 
-            {/* İkonlu Input Kutusu */}
+            {/* Input Kutusu */}
             <div className="w-full fixed bottom-12 max-w-md px-4 z-20">
               <div className="relative flex items-center">
                 <User className="absolute left-3 text-slate-500" size={18} />
@@ -214,7 +226,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* Footer: Powered by & Ayrı Sayfa Gizlilik Bağlantısı */}
+        {/* Footer */}
         <footer className="w-full fixed bottom-2 text-center text-[10px] text-slate-500/80 px-4 flex items-center justify-center gap-2 pointer-events-auto z-10">
           <span>Powered by <span className="text-blue-400 font-semibold">Gemini </span></span>
           <span>•</span>
@@ -225,4 +237,4 @@ export default function Home() {
       </div>
     </main>
   );
-}
+            }
