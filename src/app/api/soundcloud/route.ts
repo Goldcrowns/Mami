@@ -2,14 +2,9 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const trackUrl = searchParams.get('url');
-
-  if (!trackUrl) {
-    return NextResponse.json({ error: 'URL parametresi gerekli.' }, { status: 400 });
-  }
+  const trackUrl = searchParams.get('url') || 'https://soundcloud.com/kim-thomas-620577821/britney-spears-gimme-more-kim-thomas-remix';
 
   try {
-    // SoundCloud oEmbed servisine istek atıyoruz
     const oembedUrl = `https://soundcloud.com/oembed?format=json&url=${encodeURIComponent(trackUrl)}`;
     const response = await fetch(oembedUrl);
 
@@ -19,15 +14,13 @@ export async function GET(request: Request) {
 
     const data = await response.json();
 
-    // İstediğimiz temiz veriyi döndürüyoruz
     return NextResponse.json({
       title: data.title,
       author_name: data.author_name,
-      author_url: data.author_url,
       thumbnail_url: data.thumbnail_url,
-      html: data.html, // Gömülü player HTML'i
+      html: data.html,
     });
   } catch (error) {
-    return NextResponse.json({ error: 'Bir sunucu hatası oluştu.' }, { status: 500 });
+    return NextResponse.json({ error: 'Sunucu hatası oluştu.' }, { status: 500 });
   }
 }
